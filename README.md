@@ -1,6 +1,8 @@
 # Kubernetes Journey
 
-Kubernetes labs resources.
+Kubernetes labs resources to support personal training on K8S
+
+![kubernetes logo](./medias/kubernetes-logo.png)
 
 ## List of available labs
 
@@ -12,7 +14,7 @@ Kubernetes labs resources.
 
 ## Additional resources
 
-- [container.training](https://container.training/) from @jpetazzo
+- [container.training](https://container.training/) from [@jpetazzo](https://github.com/jpetazzo/) (Just a must read !)
 - [Full Kubernetes training from ENIX (Fr)](https://enix.io/fr/services/formation/)
 
 ## License
