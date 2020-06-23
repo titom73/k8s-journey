@@ -7,7 +7,7 @@ Kubernetes labs resources.
 - [Tips and Tricks](docs/tips.md)
 - [Lab Setup](./docs/setup.md)
 - [Install Traefik as ingress controller](./manifests/traefik.yml)
-- [NGINX with NodePort](./manifests/deploy-nginx-hello.yml)
+- [NGINX with NodePort](./docs/nginx-with-ingress-vhost.md)
 - [NGINX with Ingress based on vhost](./manifests/deploy-nginx-basic.yml)
 
 ## Additional resources
