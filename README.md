@@ -10,6 +10,10 @@ Kubernetes labs resources.
 - [NGINX with NodePort](./manifests/deploy-nginx-hello.yml)
 - [NGINX with Ingress based on vhost](./manifests/deploy-nginx-basic.yml)
 
+## Additional resources
+
+- [container.training](https://container.training/) from @jpetazzo
+- [Full Kubernetes training from ENIX (Fr)](https://enix.io/fr/services/formation/)
 
 ## License
 
