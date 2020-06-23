@@ -1,3 +1,0 @@
-echo 'Login to k8S server'
-
-export KUBECONFIG="kube/config"
