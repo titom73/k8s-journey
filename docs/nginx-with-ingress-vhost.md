@@ -6,6 +6,8 @@ Deploy an NGINX pod and allow access from outside using traefik as ingress contr
 
 ## Deploy content
 
+Complete manifest is available under [__manifests__](../manifests/deploy-nginx-basic.yml) folder
+
 ### Create deployment
 
 ```yaml
