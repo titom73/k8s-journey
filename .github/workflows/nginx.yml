@@ -7,16 +7,17 @@ on:
       - docker/nginx/*
 
 jobs:
-  build:
+  NGINX-Build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
 
-    - name: Buster Slim and Default image
+    - name: titom73/nginx image build
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: titom73/nginx
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        dockerfile: docker/nginx/Dockerfile
+        workdir: docker/nginx
+        dockerfile: Dockerfile
         tags: "latest"
