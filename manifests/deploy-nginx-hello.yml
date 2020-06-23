@@ -5,16 +5,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: web-front
+      app: hello
   replicas: 1 # tells deployment to run 2 pods matching the template
   template:
     metadata:
       labels:
-        app: web-front
+        app: hello
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: titom73/nginx
         ports:
         - containerPort: 80
 ---
@@ -30,5 +30,5 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: nginx-hello-world
+    app: hello
   type: NodePort

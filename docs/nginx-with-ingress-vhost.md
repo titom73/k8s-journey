@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: titom73/nginx
         ports:
         - containerPort: 80
 ```
@@ -77,7 +77,7 @@ Host __MUST__ be changed according your own setup. [nip.io](https://nip.io) migh
 
 ### Use buil-in manifest
 
-```
+```shell
 $ kubectl apply -f manifest/deploy-nginx-basic.yml
 deployment.apps/nginx-basics created
 service/nginx-basic created
@@ -108,94 +108,39 @@ fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.g
 Executing busybox-1.31.1-r16.trigger
 Executing ca-certificates-20191127-r4.trigger
 OK: 7 MiB in 18 packages
+
 / # curl nginx-basics
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
 
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
-
-<p><em>Thank you for using nginx.</em></p>
-</body>
-</html>
+Server address: 10.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: 23/Jun/2020:13:46:42 +0000
+URI: /
+Request ID: 36ee8606b2ecb63d877f7ebc8c49d3a5
 ```
 
 - Shell in Kubernetes using SVC name
 
 ```shell
 / # curl test.lab.as73.inetsix.net
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
+404 page not found
 
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
-
-<p><em>Thank you for using nginx.</em></p>
-</body>
-</html>
+/ # curl test.lab.as73.inetsix.net/basics
+Server address: 10.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: 23/Jun/2020:13:56:30 +0000
+URI: /basics
+Request ID: e1b7e84d56315e41cd3864ae37b921c0
 ```
 
 - Shell from laptop
 
 ```shell
-@tomcat ➜ ~  curl test.lab.as73.inetsix.net
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
-
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
-
-<p><em>Thank you for using nginx.</em></p>
-</body>
-</html>
+@tomcat ➜ ~  curl test.lab.as73.inetsix.net/basics
+Server address: 10.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: 23/Jun/2020:13:52:37 +0000
+URI: /basics
+Request ID: 9d2133fc127ab172cf3dfc0a95f6554d
 ```
 
 
