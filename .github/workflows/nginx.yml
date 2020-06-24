@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+
     - name: nginx image build
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
@@ -21,3 +22,11 @@ jobs:
         workdir: docker/nginx
         dockerfile: Dockerfile
         tags: "latest"
+
+    - name: update docker repo description
+      uses: peter-evans/dockerhub-description@v2.1.0
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKERHUB_REPOSITORY: titom73/nginx
+        README_FILEPATH: docker/nginx/README.md
