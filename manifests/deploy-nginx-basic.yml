@@ -49,3 +49,7 @@ spec:
         backend:
           serviceName: nginx-basics
           servicePort: 80
+      - path: /
+        backend:
+          serviceName: nginx-basics
+          servicePort: 80

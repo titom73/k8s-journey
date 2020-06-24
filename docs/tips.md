@@ -40,15 +40,15 @@ $ brew install kns
 $ export SERVER=1.1.1.1
 $ export PORT=32081
 
-$ while sleep 0.3; do curl -s ${SERVER}:${PORT} | jq .HOSTNAME; done
-"httpenv-cfb65dd68-lkz6f"
-"httpenv-cfb65dd68-lkz6f"
-"httpenv-cfb65dd68-mv26c"
-"httpenv-cfb65dd68-mv26c"
-"httpenv-cfb65dd68-lkz6f"
-"httpenv-cfb65dd68-mv26c"
-"httpenv-cfb65dd68-lkz6f"
-"httpenv-cfb65dd68-mv26c
+$ while sleep 0.3; do curl -s ${SERVER}:${PORT} | grep name; done
+Server name: "httpenv-cfb65dd68-lkz6f"
+Server name: "httpenv-cfb65dd68-lkz6f"
+Server name: "httpenv-cfb65dd68-mv26c"
+Server name: "httpenv-cfb65dd68-mv26c"
+Server name: "httpenv-cfb65dd68-lkz6f"
+Server name: "httpenv-cfb65dd68-mv26c"
+Server name: "httpenv-cfb65dd68-lkz6f"
+Server name: "httpenv-cfb65dd68-mv26c
 ```
 
 ### Kill POD
@@ -86,6 +86,71 @@ pingpong-6777998c97   1         1         1       4m29s
 $ kubectl get pods
 NAME                        READY   STATUS    RESTARTS   AGE
 pingpong-6777998c97-l8dmk   1/1     Running   0          4m34s
+```
+
+### Scale deployment
+
+- Instantiate sclae up process
+
+```shell
+kubectl scale deployment nginx-basics --replicas=3
+deployment.apps/nginx-basics scaled
+
+k get deployments.apps nginx-basics
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-basics   3/3     3            3           19h
+
+k get pods --selector=app=webui
+NAME                           READY   STATUS    RESTARTS   AGE
+nginx-basics-c48d789fd-kzcbt   1/1     Running   1          19h
+nginx-basics-c48d789fd-vbrmv   1/1     Running   0          3m39s
+nginx-basics-c48d789fd-vx9t5   1/1     Running   0          3m39s
+
+k describe deployments.apps nginx-basics
+Name:                   nginx-basics
+Namespace:              default
+CreationTimestamp:      Tue, 23 Jun 2020 15:44:44 +0200
+Labels:                 <none>
+Annotations:            deployment.kubernetes.io/revision: 1
+                        kubectl.kubernetes.io/last-applied-configuration:
+                          ...
+Selector:               app=webui
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=webui
+  Containers:
+   nginx:
+    Image:        titom73/nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Progressing    True    NewReplicaSetAvailable
+  Available      True    MinimumReplicasAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   nginx-basics-c48d789fd (3/3 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  4m5s  deployment-controller  Scaled up replica set nginx-basics-c48d789fd to 3
+```
+
+- Check with Server requests
+
+```shell
+$ while sleep 0.3; do curl -s test.lab.as73.inetsix.net/basics | grep name; done
+Server name: nginx-basics-c48d789fd-kzcbt
+Server name: nginx-basics-c48d789fd-vbrmv
+Server name: nginx-basics-c48d789fd-vx9t5
+Server name: nginx-basics-c48d789fd-kzcbt
+Server name: nginx-basics-c48d789fd-vbrmv
 ```
 
 ## Tricks
