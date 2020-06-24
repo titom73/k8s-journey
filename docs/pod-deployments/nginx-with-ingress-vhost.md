@@ -75,7 +75,7 @@ spec:
 
 Host __MUST__ be changed according your own setup. [nip.io](https://nip.io) might provide a solution to create your host
 
-### Use buil-in manifest
+### Use built-in manifest
 
 ```shell
 $ kubectl apply -f manifest/deploy-nginx-basic.yml
@@ -88,17 +88,16 @@ ingress.networking.k8s.io/nginx-basics created
 
 ### Traefik validation
 
-![traefik dashboard](medias/traefik-dashboard.png)
+![traefi$ kubectl dashboard](medias/traefik-dashboard.png)
 
 ### From shell
 
 - Shell in Kubernetes using SVC name
 
 ```shell
-k8s-journey on  master [✘+?] at ☸️  microk8s
-➜ kalpine
+$ kalpine
 If you don't see a command prompt, try pressing enter.
-/ # apk add curl
+/ # ap$ kubectl add curl
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
 (1/4) Installing ca-certificates (20191127-r4)
@@ -121,9 +120,6 @@ Request ID: 36ee8606b2ecb63d877f7ebc8c49d3a5
 - Shell in Kubernetes using SVC name
 
 ```shell
-/ # curl test.lab.as73.inetsix.net
-404 page not found
-
 / # curl test.lab.as73.inetsix.net/basics
 Server address: 10.1.32.32:80
 Server name: nginx-basics-c48d789fd-kzcbt
@@ -143,10 +139,9 @@ URI: /basics
 Request ID: 9d2133fc127ab172cf3dfc0a95f6554d
 ```
 
+## Chek Kubernetes status
 
-## Check Kubernetes status
-
-### Check deployment
+### Chek deployment
 
 ```shell
 $ kubectl get deployments
@@ -195,7 +190,7 @@ Events:
   Normal  ScalingReplicaSet  29m   deployment-controller  Scaled down replica set nginx-basics-8c54c7598 to 1
 ```
 
-### Check POD
+### Chec$ kubectl POD
 
 ```
 $ kubectl get pod
@@ -256,10 +251,10 @@ Events:
   Normal  Started    34m   kubelet, k8s-node1  Started container nginx
 ```
 
-### Check Service
+### Chec$ kubectl Service
 
 ```shell
-k get services
+$ kubectl get services
 NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 kubernetes          ClusterIP   10.152.183.1     <none>        443/TCP        144m
 nginx-basics        ClusterIP   10.152.183.49    <none>        80/TCP         38m
@@ -269,7 +264,7 @@ nginx-hello-world   NodePort    10.152.183.104   <none>        80:31788/TCP   41
 Display service details
 
 ```shell
-k describe service nginx-basics
+$ kubectl describe service nginx-basics
 Name:              nginx-basics
 Namespace:         default
 Labels:            app=nginx
@@ -285,16 +280,16 @@ Session Affinity:  None
 Events:            <none>
 ```
 
-### Check ingress services
+### Chec$ kubectl ingress services
 
 ```shell
-k get ingress
+$ kubectl get ingress
 NAME           CLASS    HOSTS                       ADDRESS   PORTS   AGE
 nginx-basics   <none>   test.lab.as73.inetsix.net             80      40m
 ```
 
 ```shell
-k describe ingress nginx-basics
+$ kubectl describe ingress nginx-basics
 Name:             nginx-basics
 Namespace:        default
 Address:
@@ -308,4 +303,39 @@ Annotations:
   kubectl.kubernetes.io/last-applied-configuration:  {"apiVersion":"networking.k8s.io/v1beta1","kind":"Ingress","metadata":{"annotations":{},"name":"nginx-basics","namespace":"default"},"spec":{"rules":[{"host":"test.lab.as73.inetsix.net","http":{"paths":[{"backend":{"serviceName":"nginx-basics","servicePort":80},"path":"/"}]}}]}}
 
 Events:  <none>
+```
+
+## Next steps
+
+### Specific load balancing
+
+This part needs to deploy 3 different PODs to load balance across 3 different PODs
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: cheeseplate
+  annotations:
+    traefik.ingress.kubernetes.io/service-weights: |
+      spoon01: 50%
+      spoon02: 25%
+      spoon03: 25%
+spec:
+  rules:
+  - host: test2.lab.as73.inetsix.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: spoon01
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: spoon02
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: spoon03
+          servicePort: 80
 ```

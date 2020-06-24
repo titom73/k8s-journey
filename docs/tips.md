@@ -2,6 +2,17 @@
 
 ## Tips & general settings
 
+### Shell integration
+
+- Plugin for [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/kubectl)
+
+```shell
+vim ~/.zshrc
+plugins=(... kubectl)
+```
+
+### Get a shell in a K8S container
+
 - Get a shell in namespace:
 
 ```shell
@@ -14,12 +25,67 @@ $ kubectl run --restart=Never --rm -it --image=alpine alpine-runner
 alias kalpine='kubectl run --restart=Never --rm -it --image=alpine alpine-runner'
 ```
 
-- Install [kns](https://github.com/blendle/kns)
+### Namespace Switcher
 
+- Install [kns](https://github.com/blendle/kns)
 
 ```shell
 $ brew tap blendle/blendle
 $ brew install kns
+```
+
+### Test HTTP Load Balancing
+
+```shell
+$ export SERVER=1.1.1.1
+$ export PORT=32081
+
+$ while sleep 0.3; do curl -s ${SERVER}:${PORT} | jq .HOSTNAME; done
+"httpenv-cfb65dd68-lkz6f"
+"httpenv-cfb65dd68-lkz6f"
+"httpenv-cfb65dd68-mv26c"
+"httpenv-cfb65dd68-mv26c"
+"httpenv-cfb65dd68-lkz6f"
+"httpenv-cfb65dd68-mv26c"
+"httpenv-cfb65dd68-lkz6f"
+"httpenv-cfb65dd68-mv26c
+```
+
+### Kill POD
+
+Do not wait grace period for signal propagation.
+
+```shell
+# Delete a pod with minimal delay
+$ kubectl delete pod foo --now
+
+# Force delete a pod on a dead node
+$ kubectl delete pod foo --force
+
+$ kubectl delete pod foo --grace-period=-1
+# Period of time in seconds given to the resource to
+# terminate gracefully. Ignored if negative.
+# Set to 1 for immediate shutdown. Can only be set
+# to 0 when --force is true (force deletion).
+```
+
+### Deployment / Replicaset / POD relations
+
+- Deployment always create a replicaSet
+- A replicaSet always create at least one POD
+
+```shell
+$ kubectl get deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+pingpong   1/1     1            1           4m25s
+
+$ kubectl get rs
+NAME                  DESIRED   CURRENT   READY   AGE
+pingpong-6777998c97   1         1         1       4m29s
+
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+pingpong-6777998c97-l8dmk   1/1     Running   0          4m34s
 ```
 
 ## Tricks
@@ -105,9 +171,3 @@ const (
 ```
 
 Discussion on [Stackoverflow](https://stackoverflow.com/questions/59890834/k8s-coredns-and-flannel-nameserver-limit-exceeded)
-
-### Issue with DNS Search too long
-
-```shell
-
-```
