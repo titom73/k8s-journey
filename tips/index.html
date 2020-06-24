@@ -295,6 +295,33 @@
     Scale deployment
   </a>
   
+    <nav class="md-nav" aria-label="Scale deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instantiate-scale-up-process" class="md-nav__link">
+    Instantiate scale up process
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-k8s-status" class="md-nav__link">
+    Check K8S status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-with-server-requests" class="md-nav__link">
+    Check with Server requests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -530,6 +557,33 @@
     Scale deployment
   </a>
   
+    <nav class="md-nav" aria-label="Scale deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instantiate-scale-up-process" class="md-nav__link">
+    Instantiate scale up process
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-k8s-status" class="md-nav__link">
+    Check K8S status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-with-server-requests" class="md-nav__link">
+    Check with Server requests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -664,23 +718,23 @@ pingpong-6777998c97-l8dmk   <span class="m">1</span>/1     Running   <span class
 </code></pre></div>
 
 <h3 id="scale-deployment">Scale deployment<a class="headerlink" href="#scale-deployment" title="Permanent link">#</a></h3>
-<ul>
-<li>Instantiate sclae up process</li>
-</ul>
-<div class="highlight"><pre><span></span><code>kubectl scale deployment nginx-basics --replicas<span class="o">=</span><span class="m">3</span>
+<h4 id="instantiate-scale-up-process">Instantiate scale up process<a class="headerlink" href="#instantiate-scale-up-process" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code>$ kubectl scale deployment nginx-basics --replicas<span class="o">=</span><span class="m">3</span>
 deployment.apps/nginx-basics scaled
+</code></pre></div>
 
-k get deployments.apps nginx-basics
+<h4 id="check-k8s-status">Check K8S status<a class="headerlink" href="#check-k8s-status" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code>$ kubectl get deployments.apps nginx-basics
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-basics   <span class="m">3</span>/3     <span class="m">3</span>            <span class="m">3</span>           19h
 
-k get pods --selector<span class="o">=</span><span class="nv">app</span><span class="o">=</span>webui
+$ kubectl get pods --selector<span class="o">=</span><span class="nv">app</span><span class="o">=</span>webui
 NAME                           READY   STATUS    RESTARTS   AGE
 nginx-basics-c48d789fd-kzcbt   <span class="m">1</span>/1     Running   <span class="m">1</span>          19h
 nginx-basics-c48d789fd-vbrmv   <span class="m">1</span>/1     Running   <span class="m">0</span>          3m39s
 nginx-basics-c48d789fd-vx9t5   <span class="m">1</span>/1     Running   <span class="m">0</span>          3m39s
 
-k describe deployments.apps nginx-basics
+$ kubectl describe deployments.apps nginx-basics
 Name:                   nginx-basics
 Namespace:              default
 CreationTimestamp:      Tue, <span class="m">23</span> Jun <span class="m">2020</span> <span class="m">15</span>:44:44 +0200
@@ -716,9 +770,7 @@ Events:
   Normal  ScalingReplicaSet  4m5s  deployment-controller  Scaled up replica <span class="nb">set</span> nginx-basics-c48d789fd to <span class="m">3</span>
 </code></pre></div>
 
-<ul>
-<li>Check with Server requests</li>
-</ul>
+<h4 id="check-with-server-requests">Check with Server requests<a class="headerlink" href="#check-with-server-requests" title="Permanent link">#</a></h4>
 <div class="highlight"><pre><span></span><code>$ <span class="k">while</span> sleep <span class="m">0</span>.3<span class="p">;</span> <span class="k">do</span> curl -s test.lab.as73.inetsix.net/basics <span class="p">|</span> grep name<span class="p">;</span> <span class="k">done</span>
 Server name: nginx-basics-c48d789fd-kzcbt
 Server name: nginx-basics-c48d789fd-vbrmv
