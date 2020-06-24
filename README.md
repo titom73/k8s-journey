@@ -2,7 +2,7 @@
 
 Kubernetes labs resources to support personal training on K8S
 
-![kubernetes logo](./medias/kubernetes-logo.png)
+![kubernetes logo](./docs/medias/kubernetes-logo.png)
 
 ## List of available labs
 

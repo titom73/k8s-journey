@@ -88,7 +88,7 @@ ingress.networking.k8s.io/nginx-basics created
 
 ### Traefik validation
 
-![traefik dashboard](../medias/traefik-dashboard.png)
+![traefik dashboard](medias/traefik-dashboard.png)
 
 ### From shell
 
