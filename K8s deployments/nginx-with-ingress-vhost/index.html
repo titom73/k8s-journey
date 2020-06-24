@@ -1,0 +1,1004 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="notes from a new Kubernetes user.">
+      
+      
+      
+        <meta name="author" content="TiTom73">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.1.1">
+    
+    
+      
+        <title>NGINX with Ingress based on vhost - K8S Journey</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a676eddb.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,400i,700%7CUbuntu+Mono&display=fallback">
+        <style>body,input{font-family:"Ubuntu",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../medias/stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nginx-with-ingress-based-on-vhost" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="K8S Journey" class="md-header-nav__button md-logo" aria-label="K8S Journey">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,8A3,3 0 0,0 15,5A3,3 0 0,0 12,2A3,3 0 0,0 9,5A3,3 0 0,0 12,8M12,11.54C9.64,9.35 6.5,8 3,8V19C6.5,19 9.64,20.35 12,22.54C14.36,20.35 17.5,19 21,19V8C17.5,8 14.36,9.35 12,11.54Z" /></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            K8S Journey
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              NGINX with Ingress based on vhost
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/titom73/k8s-journey/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Github
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="K8S Journey" class="md-nav__button md-logo" aria-label="K8S Journey">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,8A3,3 0 0,0 15,5A3,3 0 0,0 12,2A3,3 0 0,0 9,5A3,3 0 0,0 12,8M12,11.54C9.64,9.35 6.5,8 3,8V19C6.5,19 9.64,20.35 12,22.54C14.36,20.35 17.5,19 21,19V8C17.5,8 14.36,9.35 12,11.54Z" /></svg>
+
+    </a>
+    K8S Journey
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/titom73/k8s-journey/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Github
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Kubernetes Journey" class="md-nav__link">
+      Kubernetes Journey
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../setup/" title="Lab Setup" class="md-nav__link">
+      Lab Setup
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../tips/" title="Tips & Tricks" class="md-nav__link">
+      Tips & Tricks
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      K8s deployments
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="K8s deployments" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+        </span>
+        K8s deployments
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        NGINX with Ingress based on vhost
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,9H17V7H3V9M3,13H17V11H3V13M3,17H17V15H3V17M19,17H21V15H19V17M19,7V9H21V7H19M19,13H21V11H19V13Z" /></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="NGINX with Ingress based on vhost" class="md-nav__link md-nav__link--active">
+      NGINX with Ingress based on vhost
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-content" class="md-nav__link">
+    Deploy content
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy content">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-deployment" class="md-nav__link">
+    Create deployment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expose-service" class="md-nav__link">
+    Expose service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-ingress" class="md-nav__link">
+    Create Ingress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-buil-in-manifest" class="md-nav__link">
+    Use buil-in manifest
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-result" class="md-nav__link">
+    Check result
+  </a>
+  
+    <nav class="md-nav" aria-label="Check result">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#traefik-validation" class="md-nav__link">
+    Traefik validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-shell" class="md-nav__link">
+    From shell
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-kubernetes-status" class="md-nav__link">
+    Check Kubernetes status
+  </a>
+  
+    <nav class="md-nav" aria-label="Check Kubernetes status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-deployment" class="md-nav__link">
+    Check deployment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-pod" class="md-nav__link">
+    Check POD
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-service" class="md-nav__link">
+    Check Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-ingress-services" class="md-nav__link">
+    Check ingress services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Docker
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Docker" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+        </span>
+        Docker
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-1" type="checkbox" id="nav-5-1">
+    
+    <label class="md-nav__link" for="nav-5-1">
+      Nginx
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Nginx" data-md-level="2">
+      <label class="md-nav__title" for="nav-5-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+        </span>
+        Nginx
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../docker/nginx/" title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-content" class="md-nav__link">
+    Deploy content
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy content">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-deployment" class="md-nav__link">
+    Create deployment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expose-service" class="md-nav__link">
+    Expose service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-ingress" class="md-nav__link">
+    Create Ingress
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-buil-in-manifest" class="md-nav__link">
+    Use buil-in manifest
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-result" class="md-nav__link">
+    Check result
+  </a>
+  
+    <nav class="md-nav" aria-label="Check result">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#traefik-validation" class="md-nav__link">
+    Traefik validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-shell" class="md-nav__link">
+    From shell
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-kubernetes-status" class="md-nav__link">
+    Check Kubernetes status
+  </a>
+  
+    <nav class="md-nav" aria-label="Check Kubernetes status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-deployment" class="md-nav__link">
+    Check deployment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-pod" class="md-nav__link">
+    Check POD
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-service" class="md-nav__link">
+    Check Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-ingress-services" class="md-nav__link">
+    Check ingress services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/titom73/k8s-journey/edit/master/docs/K8s deployments/nginx-with-ingress-vhost.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="nginx-with-ingress-based-on-vhost">NGINX with Ingress based on vhost<a class="headerlink" href="#nginx-with-ingress-based-on-vhost" title="Permanent link">#</a></h1>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h2>
+<p>Deploy an NGINX pod and allow access from outside using traefik as ingress controller using virtual host.</p>
+<h2 id="deploy-content">Deploy content<a class="headerlink" href="#deploy-content" title="Permanent link">#</a></h2>
+<p>Complete manifest is available under <a href="../manifests/deploy-nginx-basic.yml"><strong>manifests</strong></a> folder</p>
+<h3 id="create-deployment">Create deployment<a class="headerlink" href="#create-deployment" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Deployment</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx-basics</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">matchLabels</span><span class="p">:</span>
+      <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">webui</span>
+  <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">template</span><span class="p">:</span>
+    <span class="nt">metadata</span><span class="p">:</span>
+      <span class="nt">labels</span><span class="p">:</span>
+        <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">webui</span>
+    <span class="nt">spec</span><span class="p">:</span>
+      <span class="nt">containers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">titom73/nginx</span>
+        <span class="nt">ports</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">containerPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+</code></pre></div>
+
+<h3 id="expose-service">Expose service<a class="headerlink" href="#expose-service" title="Permanent link">#</a></h3>
+<p>Service is only available with <code>ClusterIP</code> and could not be reached from outside.</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Service</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx-basics</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">ports</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
+    <span class="nt">targetPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">webui</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ClusterIP</span>
+</code></pre></div>
+
+<h3 id="create-ingress">Create Ingress<a class="headerlink" href="#create-ingress" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Ingress</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx-basics</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">rules</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test.lab.as73.inetsix.net</span>
+    <span class="nt">http</span><span class="p">:</span>
+      <span class="nt">paths</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
+        <span class="nt">backend</span><span class="p">:</span>
+          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx-basics</span>
+          <span class="nt">servicePort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+</code></pre></div>
+
+<p>Host <strong>MUST</strong> be changed according your own setup. <a href="https://nip.io">nip.io</a> might provide a solution to create your host</p>
+<h3 id="use-buil-in-manifest">Use buil-in manifest<a class="headerlink" href="#use-buil-in-manifest" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>$ kubectl apply -f manifest/deploy-nginx-basic.yml
+deployment.apps/nginx-basics created
+service/nginx-basic created
+ingress.networking.k8s.io/nginx-basics created
+</code></pre></div>
+
+<h2 id="check-result">Check result<a class="headerlink" href="#check-result" title="Permanent link">#</a></h2>
+<h3 id="traefik-validation">Traefik validation<a class="headerlink" href="#traefik-validation" title="Permanent link">#</a></h3>
+<p><img alt="traefik dashboard" src="medias/traefik-dashboard.png" /></p>
+<h3 id="from-shell">From shell<a class="headerlink" href="#from-shell" title="Permanent link">#</a></h3>
+<ul>
+<li>Shell in Kubernetes using SVC name</li>
+</ul>
+<div class="highlight"><pre><span></span><code>k8s-journey on  master <span class="o">[</span>✘+?<span class="o">]</span> at ☸️  microk8s
+➜ kalpine
+If you don<span class="err">&#39;</span>t see a <span class="nb">command</span> prompt, try pressing enter.
+/ <span class="c1"># apk add curl</span>
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
+<span class="o">(</span><span class="m">1</span>/4<span class="o">)</span> Installing ca-certificates <span class="o">(</span><span class="m">20191127</span>-r4<span class="o">)</span>
+<span class="o">(</span><span class="m">2</span>/4<span class="o">)</span> Installing nghttp2-libs <span class="o">(</span><span class="m">1</span>.41.0-r0<span class="o">)</span>
+<span class="o">(</span><span class="m">3</span>/4<span class="o">)</span> Installing libcurl <span class="o">(</span><span class="m">7</span>.69.1-r0<span class="o">)</span>
+<span class="o">(</span><span class="m">4</span>/4<span class="o">)</span> Installing curl <span class="o">(</span><span class="m">7</span>.69.1-r0<span class="o">)</span>
+Executing busybox-1.31.1-r16.trigger
+Executing ca-certificates-20191127-r4.trigger
+OK: <span class="m">7</span> MiB in <span class="m">18</span> packages
+
+/ <span class="c1"># curl nginx-basics</span>
+
+Server address: <span class="m">10</span>.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: <span class="m">23</span>/Jun/2020:13:46:42 +0000
+URI: /
+Request ID: 36ee8606b2ecb63d877f7ebc8c49d3a5
+</code></pre></div>
+
+<ul>
+<li>Shell in Kubernetes using SVC name</li>
+</ul>
+<div class="highlight"><pre><span></span><code>/ <span class="c1"># curl test.lab.as73.inetsix.net</span>
+<span class="m">404</span> page not found
+
+/ <span class="c1"># curl test.lab.as73.inetsix.net/basics</span>
+Server address: <span class="m">10</span>.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: <span class="m">23</span>/Jun/2020:13:56:30 +0000
+URI: /basics
+Request ID: e1b7e84d56315e41cd3864ae37b921c0
+</code></pre></div>
+
+<ul>
+<li>Shell from laptop</li>
+</ul>
+<div class="highlight"><pre><span></span><code>@tomcat ➜ ~  curl test.lab.as73.inetsix.net/basics
+Server address: <span class="m">10</span>.1.32.32:80
+Server name: nginx-basics-c48d789fd-kzcbt
+Date: <span class="m">23</span>/Jun/2020:13:52:37 +0000
+URI: /basics
+Request ID: 9d2133fc127ab172cf3dfc0a95f6554d
+</code></pre></div>
+
+<h2 id="check-kubernetes-status">Check Kubernetes status<a class="headerlink" href="#check-kubernetes-status" title="Permanent link">#</a></h2>
+<h3 id="check-deployment">Check deployment<a class="headerlink" href="#check-deployment" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>$ kubectl get deployments
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-basics        <span class="m">1</span>/1     <span class="m">1</span>            <span class="m">1</span>           28m
+</code></pre></div>
+
+<p>And get more details:</p>
+<div class="highlight"><pre><span></span><code>$ kubectl describe deployments.apps nginx-basics
+Name:                   nginx-basics
+Namespace:              default
+CreationTimestamp:      Tue, 23 Jun 2020 12:18:05 +0200
+Labels:                 &lt;none&gt;
+Annotations:            deployment.kubernetes.io/revision: 1
+                        kubectl.kubernetes.io/last-applied-configuration:
+                          {&quot;apiVersion&quot;:&quot;apps/v1&quot;,&quot;kind&quot;:&quot;Deployment&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;nginx-basics&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;replicas&quot;:1...
+Selector:               app=webui
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=webui
+  Containers:
+   nginx:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Progressing    True    NewReplicaSetAvailable
+  Available      True    MinimumReplicasAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   nginx-basics-8c54c7598 (1/1 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  30m   deployment-controller  Scaled up replica set nginx-basics-8c54c7598 to 1
+  Normal  ScalingReplicaSet  29m   deployment-controller  Scaled up replica set nginx-basics-8c54c7598 to 3
+  Normal  ScalingReplicaSet  29m   deployment-controller  Scaled down replica set nginx-basics-8c54c7598 to 1
+</code></pre></div>
+
+<h3 id="check-pod">Check POD<a class="headerlink" href="#check-pod" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>$ kubectl get pod
+NAME                                 READY   STATUS    RESTARTS   AGE
+nginx-basics-8c54c7598-rd475         1/1     Running   0          34m
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>Name:         nginx-basics-8c54c7598-rd475
+Namespace:    default
+Priority:     <span class="m">0</span>
+Node:         k8s-node1/10.73.1.248
+Start Time:   Tue, <span class="m">23</span> Jun <span class="m">2020</span> <span class="m">12</span>:18:05 +0200
+Labels:       <span class="nv">app</span><span class="o">=</span>webui
+              pod-template-hash<span class="o">=</span>8c54c7598
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           <span class="m">10</span>.1.32.28
+IPs:
+  IP:           <span class="m">10</span>.1.32.28
+Controlled By:  ReplicaSet/nginx-basics-8c54c7598
+Containers:
+  nginx:
+    Container ID:   containerd://c738ac9d6c8d7ee00e5d56e7d422f7873c5333c3df70528367989623dbc51343
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:21f32f6c08406306d822a0e6e8b7dc81f53f336570e852e25fbe1e3e3d0d0133
+    Port:           <span class="m">80</span>/TCP
+    Host Port:      <span class="m">0</span>/TCP
+    State:          Running
+      Started:      Tue, <span class="m">23</span> Jun <span class="m">2020</span> <span class="m">12</span>:18:07 +0200
+    Ready:          True
+    Restart Count:  <span class="m">0</span>
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-tp69t <span class="o">(</span>ro<span class="o">)</span>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-tp69t:
+    Type:        Secret <span class="o">(</span>a volume populated by a Secret<span class="o">)</span>
+    SecretName:  default-token-tp69t
+    Optional:    <span class="nb">false</span>
+QoS Class:       BestEffort
+Node-Selectors:  &lt;none&gt;
+Tolerations:     node.kubernetes.io/not-ready:NoExecute <span class="k">for</span> 300s
+                 node.kubernetes.io/unreachable:NoExecute <span class="k">for</span> 300s
+Events:
+  Type    Reason     Age   From                Message
+  ----    ------     ----  ----                -------
+  Normal  Scheduled  35m   default-scheduler   Successfully assigned default/nginx-basics-8c54c7598-rd475 to k8s-node1
+  Normal  Pulling    35m   kubelet, k8s-node1  Pulling image <span class="s2">&quot;nginx&quot;</span>
+  Normal  Pulled     35m   kubelet, k8s-node1  Successfully pulled image <span class="s2">&quot;nginx&quot;</span>
+  Normal  Created    35m   kubelet, k8s-node1  Created container nginx
+  Normal  Started    34m   kubelet, k8s-node1  Started container nginx
+</code></pre></div>
+
+<h3 id="check-service">Check Service<a class="headerlink" href="#check-service" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>k get services
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>        AGE
+kubernetes          ClusterIP   <span class="m">10</span>.152.183.1     &lt;none&gt;        <span class="m">443</span>/TCP        144m
+nginx-basics        ClusterIP   <span class="m">10</span>.152.183.49    &lt;none&gt;        <span class="m">80</span>/TCP         38m
+nginx-hello-world   NodePort    <span class="m">10</span>.152.183.104   &lt;none&gt;        <span class="m">80</span>:31788/TCP   41m
+</code></pre></div>
+
+<p>Display service details</p>
+<div class="highlight"><pre><span></span><code>k describe service nginx-basics
+Name:              nginx-basics
+Namespace:         default
+Labels:            <span class="nv">app</span><span class="o">=</span>nginx
+Annotations:       kubectl.kubernetes.io/last-applied-configuration:
+                     <span class="o">{</span><span class="s2">&quot;apiVersion&quot;</span>:<span class="s2">&quot;v1&quot;</span>,<span class="s2">&quot;kind&quot;</span>:<span class="s2">&quot;Service&quot;</span>,<span class="s2">&quot;metadata&quot;</span>:<span class="o">{</span><span class="s2">&quot;annotations&quot;</span>:<span class="o">{}</span>,<span class="s2">&quot;labels&quot;</span>:<span class="o">{</span><span class="s2">&quot;app&quot;</span>:<span class="s2">&quot;nginx&quot;</span><span class="o">}</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;nginx-basics&quot;</span>,<span class="s2">&quot;namespace&quot;</span>:<span class="s2">&quot;default&quot;</span><span class="o">}</span>,<span class="s2">&quot;sp...</span>
+<span class="s2">Selector:          app=webui</span>
+<span class="s2">Type:              ClusterIP</span>
+<span class="s2">IP:                10.152.183.49</span>
+<span class="s2">Port:              &lt;unset&gt;  80/TCP</span>
+<span class="s2">TargetPort:        80/TCP</span>
+<span class="s2">Endpoints:         10.1.32.28:80</span>
+<span class="s2">Session Affinity:  None</span>
+<span class="s2">Events:            &lt;none&gt;</span>
+</code></pre></div>
+
+<h3 id="check-ingress-services">Check ingress services<a class="headerlink" href="#check-ingress-services" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>k get ingress
+NAME           CLASS    HOSTS                       ADDRESS   PORTS   AGE
+nginx-basics   &lt;none&gt;   test.lab.as73.inetsix.net             <span class="m">80</span>      40m
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>k describe ingress nginx-basics
+Name:             nginx-basics
+Namespace:        default
+Address:
+Default backend:  default-http-backend:80 <span class="o">(</span>&lt;none&gt;<span class="o">)</span>
+Rules:
+  Host                       Path  Backends
+  ----                       ----  --------
+  test.lab.as73.inetsix.net
+                             /   nginx-basics:80 <span class="o">(</span><span class="m">10</span>.1.32.28:80<span class="o">)</span>
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  <span class="o">{</span><span class="s2">&quot;apiVersion&quot;</span>:<span class="s2">&quot;networking.k8s.io/v1beta1&quot;</span>,<span class="s2">&quot;kind&quot;</span>:<span class="s2">&quot;Ingress&quot;</span>,<span class="s2">&quot;metadata&quot;</span>:<span class="o">{</span><span class="s2">&quot;annotations&quot;</span>:<span class="o">{}</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;nginx-basics&quot;</span>,<span class="s2">&quot;namespace&quot;</span>:<span class="s2">&quot;default&quot;</span><span class="o">}</span>,<span class="s2">&quot;spec&quot;</span>:<span class="o">{</span><span class="s2">&quot;rules&quot;</span>:<span class="o">[{</span><span class="s2">&quot;host&quot;</span>:<span class="s2">&quot;test.lab.as73.inetsix.net&quot;</span>,<span class="s2">&quot;http&quot;</span>:<span class="o">{</span><span class="s2">&quot;paths&quot;</span>:<span class="o">[{</span><span class="s2">&quot;backend&quot;</span>:<span class="o">{</span><span class="s2">&quot;serviceName&quot;</span>:<span class="s2">&quot;nginx-basics&quot;</span>,<span class="s2">&quot;servicePort&quot;</span>:80<span class="o">}</span>,<span class="s2">&quot;path&quot;</span>:<span class="s2">&quot;/&quot;</span><span class="o">}]}}]}}</span>
+
+Events:  &lt;none&gt;
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../../tips/" title="Tips & Tricks" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Tips & Tricks
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../docker/nginx/" title="Index" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Index
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            TiTom73
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.c51dfa35.min.js"></script>
+      <script src="../../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ["instant"],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.58d22e8e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
