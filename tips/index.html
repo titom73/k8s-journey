@@ -290,6 +290,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#scale-deployment" class="md-nav__link">
+    Scale deployment
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -518,6 +525,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#scale-deployment" class="md-nav__link">
+    Scale deployment
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -605,15 +619,15 @@ $ brew install kns
 <div class="highlight"><pre><span></span><code>$ <span class="nb">export</span> <span class="nv">SERVER</span><span class="o">=</span><span class="m">1</span>.1.1.1
 $ <span class="nb">export</span> <span class="nv">PORT</span><span class="o">=</span><span class="m">32081</span>
 
-$ <span class="k">while</span> sleep <span class="m">0</span>.3<span class="p">;</span> <span class="k">do</span> curl -s <span class="si">${</span><span class="nv">SERVER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">PORT</span><span class="si">}</span> <span class="p">|</span> jq .HOSTNAME<span class="p">;</span> <span class="k">done</span>
-<span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
-<span class="s2">&quot;httpenv-cfb65dd68-mv26c</span>
+$ <span class="k">while</span> sleep <span class="m">0</span>.3<span class="p">;</span> <span class="k">do</span> curl -s <span class="si">${</span><span class="nv">SERVER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">PORT</span><span class="si">}</span> <span class="p">|</span> grep name<span class="p">;</span> <span class="k">done</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-mv26c&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-lkz6f&quot;</span>
+Server name: <span class="s2">&quot;httpenv-cfb65dd68-mv26c</span>
 </code></pre></div>
 
 <h3 id="kill-pod">Kill POD<a class="headerlink" href="#kill-pod" title="Permanent link">#</a></h3>
@@ -647,6 +661,70 @@ pingpong-6777998c97   <span class="m">1</span>         <span class="m">1</span> 
 $ kubectl get pods
 NAME                        READY   STATUS    RESTARTS   AGE
 pingpong-6777998c97-l8dmk   <span class="m">1</span>/1     Running   <span class="m">0</span>          4m34s
+</code></pre></div>
+
+<h3 id="scale-deployment">Scale deployment<a class="headerlink" href="#scale-deployment" title="Permanent link">#</a></h3>
+<ul>
+<li>Instantiate sclae up process</li>
+</ul>
+<div class="highlight"><pre><span></span><code>kubectl scale deployment nginx-basics --replicas<span class="o">=</span><span class="m">3</span>
+deployment.apps/nginx-basics scaled
+
+k get deployments.apps nginx-basics
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-basics   <span class="m">3</span>/3     <span class="m">3</span>            <span class="m">3</span>           19h
+
+k get pods --selector<span class="o">=</span><span class="nv">app</span><span class="o">=</span>webui
+NAME                           READY   STATUS    RESTARTS   AGE
+nginx-basics-c48d789fd-kzcbt   <span class="m">1</span>/1     Running   <span class="m">1</span>          19h
+nginx-basics-c48d789fd-vbrmv   <span class="m">1</span>/1     Running   <span class="m">0</span>          3m39s
+nginx-basics-c48d789fd-vx9t5   <span class="m">1</span>/1     Running   <span class="m">0</span>          3m39s
+
+k describe deployments.apps nginx-basics
+Name:                   nginx-basics
+Namespace:              default
+CreationTimestamp:      Tue, <span class="m">23</span> Jun <span class="m">2020</span> <span class="m">15</span>:44:44 +0200
+Labels:                 &lt;none&gt;
+Annotations:            deployment.kubernetes.io/revision: <span class="m">1</span>
+                        kubectl.kubernetes.io/last-applied-configuration:
+                          ...
+Selector:               <span class="nv">app</span><span class="o">=</span>webui
+Replicas:               <span class="m">3</span> desired <span class="p">|</span> <span class="m">3</span> updated <span class="p">|</span> <span class="m">3</span> total <span class="p">|</span> <span class="m">3</span> available <span class="p">|</span> <span class="m">0</span> unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        <span class="m">0</span>
+RollingUpdateStrategy:  <span class="m">25</span>% max unavailable, <span class="m">25</span>% max surge
+Pod Template:
+  Labels:  <span class="nv">app</span><span class="o">=</span>webui
+  Containers:
+   nginx:
+    Image:        titom73/nginx
+    Port:         <span class="m">80</span>/TCP
+    Host Port:    <span class="m">0</span>/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Progressing    True    NewReplicaSetAvailable
+  Available      True    MinimumReplicasAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   nginx-basics-c48d789fd <span class="o">(</span><span class="m">3</span>/3 replicas created<span class="o">)</span>
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  4m5s  deployment-controller  Scaled up replica <span class="nb">set</span> nginx-basics-c48d789fd to <span class="m">3</span>
+</code></pre></div>
+
+<ul>
+<li>Check with Server requests</li>
+</ul>
+<div class="highlight"><pre><span></span><code>$ <span class="k">while</span> sleep <span class="m">0</span>.3<span class="p">;</span> <span class="k">do</span> curl -s test.lab.as73.inetsix.net/basics <span class="p">|</span> grep name<span class="p">;</span> <span class="k">done</span>
+Server name: nginx-basics-c48d789fd-kzcbt
+Server name: nginx-basics-c48d789fd-vbrmv
+Server name: nginx-basics-c48d789fd-vx9t5
+Server name: nginx-basics-c48d789fd-kzcbt
+Server name: nginx-basics-c48d789fd-vbrmv
 </code></pre></div>
 
 <h2 id="tricks">Tricks<a class="headerlink" href="#tricks" title="Permanent link">#</a></h2>
