@@ -190,9 +190,9 @@ Events:
   Normal  ScalingReplicaSet  29m   deployment-controller  Scaled down replica set nginx-basics-8c54c7598 to 1
 ```
 
-### Chec$ kubectl POD
+### Check POD
 
-```
+```shell
 $ kubectl get pod
 NAME                                 READY   STATUS    RESTARTS   AGE
 nginx-basics-8c54c7598-rd475         1/1     Running   0          34m
@@ -251,7 +251,7 @@ Events:
   Normal  Started    34m   kubelet, k8s-node1  Started container nginx
 ```
 
-### Chec$ kubectl Service
+### Check Service
 
 ```shell
 $ kubectl get services
@@ -280,7 +280,7 @@ Session Affinity:  None
 Events:            <none>
 ```
 
-### Chec$ kubectl ingress services
+### Check ingress services
 
 ```shell
 $ kubectl get ingress
@@ -309,7 +309,7 @@ Events:  <none>
 
 ### Specific load balancing
 
-This part needs to deploy 3 different PODs to load balance across 3 different PODs
+By default, ingress load balance traffic using round robin approach on all replicas of a POD deployed matching `app=nginx-basics`. This part needs to deploy 3 different PODs to load balance across 3 different PODs
 
 ```yaml
 apiVersion: networking.k8s.io/v1beta1
@@ -318,9 +318,9 @@ metadata:
   name: cheeseplate
   annotations:
     traefik.ingress.kubernetes.io/service-weights: |
-      spoon01: 50%
-      spoon02: 25%
-      spoon03: 25%
+      basics01: 50%
+      basics02: 25%
+      basics03: 25%
 spec:
   rules:
   - host: test2.lab.as73.inetsix.net
@@ -328,14 +328,14 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: spoon01
+          serviceName: basics01
           servicePort: 80
       - path: /
         backend:
-          serviceName: spoon02
+          serviceName: basics02
           servicePort: 80
       - path: /
         backend:
-          serviceName: spoon03
+          serviceName: basics03
           servicePort: 80
 ```
