@@ -90,23 +90,27 @@ pingpong-6777998c97-l8dmk   1/1     Running   0          4m34s
 
 ### Scale deployment
 
-- Instantiate sclae up process
+#### Instantiate scale up process
 
 ```shell
-kubectl scale deployment nginx-basics --replicas=3
+$ kubectl scale deployment nginx-basics --replicas=3
 deployment.apps/nginx-basics scaled
+```
 
-k get deployments.apps nginx-basics
+#### Check K8S status
+
+```shell
+$ kubectl get deployments.apps nginx-basics
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-basics   3/3     3            3           19h
 
-k get pods --selector=app=webui
+$ kubectl get pods --selector=app=webui
 NAME                           READY   STATUS    RESTARTS   AGE
 nginx-basics-c48d789fd-kzcbt   1/1     Running   1          19h
 nginx-basics-c48d789fd-vbrmv   1/1     Running   0          3m39s
 nginx-basics-c48d789fd-vx9t5   1/1     Running   0          3m39s
 
-k describe deployments.apps nginx-basics
+$ kubectl describe deployments.apps nginx-basics
 Name:                   nginx-basics
 Namespace:              default
 CreationTimestamp:      Tue, 23 Jun 2020 15:44:44 +0200
@@ -142,7 +146,7 @@ Events:
   Normal  ScalingReplicaSet  4m5s  deployment-controller  Scaled up replica set nginx-basics-c48d789fd to 3
 ```
 
-- Check with Server requests
+#### Check with Server requests
 
 ```shell
 $ while sleep 0.3; do curl -s test.lab.as73.inetsix.net/basics | grep name; done
