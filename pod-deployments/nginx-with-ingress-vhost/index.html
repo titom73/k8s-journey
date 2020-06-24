@@ -442,22 +442,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-pod" class="md-nav__link">
-    Chec$ kubectl POD
+  <a href="#check-pod" class="md-nav__link">
+    Check POD
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-service" class="md-nav__link">
-    Chec$ kubectl Service
+  <a href="#check-service" class="md-nav__link">
+    Check Service
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-ingress-services" class="md-nav__link">
-    Chec$ kubectl ingress services
+  <a href="#check-ingress-services" class="md-nav__link">
+    Check ingress services
   </a>
   
 </li>
@@ -615,22 +615,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-pod" class="md-nav__link">
-    Chec$ kubectl POD
+  <a href="#check-pod" class="md-nav__link">
+    Check POD
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-service" class="md-nav__link">
-    Chec$ kubectl Service
+  <a href="#check-service" class="md-nav__link">
+    Check Service
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#chec-kubectl-ingress-services" class="md-nav__link">
-    Chec$ kubectl ingress services
+  <a href="#check-ingress-services" class="md-nav__link">
+    Check ingress services
   </a>
   
 </li>
@@ -848,10 +848,10 @@ Events:
   Normal  ScalingReplicaSet  29m   deployment-controller  Scaled down replica set nginx-basics-8c54c7598 to 1
 </code></pre></div>
 
-<h3 id="chec-kubectl-pod">Chec$ kubectl POD<a class="headerlink" href="#chec-kubectl-pod" title="Permanent link">#</a></h3>
+<h3 id="check-pod">Check POD<a class="headerlink" href="#check-pod" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code>$ kubectl get pod
 NAME                                 READY   STATUS    RESTARTS   AGE
-nginx-basics-8c54c7598-rd475         1/1     Running   0          34m
+nginx-basics-8c54c7598-rd475         <span class="m">1</span>/1     Running   <span class="m">0</span>          34m
 </code></pre></div>
 
 <div class="highlight"><pre><span></span><code>Name:         nginx-basics-8c54c7598-rd475
@@ -906,7 +906,7 @@ Events:
   Normal  Started    34m   kubelet, k8s-node1  Started container nginx
 </code></pre></div>
 
-<h3 id="chec-kubectl-service">Chec$ kubectl Service<a class="headerlink" href="#chec-kubectl-service" title="Permanent link">#</a></h3>
+<h3 id="check-service">Check Service<a class="headerlink" href="#check-service" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code>$ kubectl get services
 NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>        AGE
 kubernetes          ClusterIP   <span class="m">10</span>.152.183.1     &lt;none&gt;        <span class="m">443</span>/TCP        144m
@@ -931,7 +931,7 @@ Annotations:       kubectl.kubernetes.io/last-applied-configuration:
 <span class="s2">Events:            &lt;none&gt;</span>
 </code></pre></div>
 
-<h3 id="chec-kubectl-ingress-services">Chec$ kubectl ingress services<a class="headerlink" href="#chec-kubectl-ingress-services" title="Permanent link">#</a></h3>
+<h3 id="check-ingress-services">Check ingress services<a class="headerlink" href="#check-ingress-services" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code>$ kubectl get ingress
 NAME           CLASS    HOSTS                       ADDRESS   PORTS   AGE
 nginx-basics   &lt;none&gt;   test.lab.as73.inetsix.net             <span class="m">80</span>      40m
@@ -955,16 +955,16 @@ Events:  &lt;none&gt;
 
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
 <h3 id="specific-load-balancing">Specific load balancing<a class="headerlink" href="#specific-load-balancing" title="Permanent link">#</a></h3>
-<p>This part needs to deploy 3 different PODs to load balance across 3 different PODs</p>
+<p>By default, ingress load balance traffic using round robin approach on all replicas of a POD deployed matching <code>app=nginx-basics</code>. This part needs to deploy 3 different PODs to load balance across 3 different PODs</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1beta1</span>
 <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Ingress</span>
 <span class="nt">metadata</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cheeseplate</span>
   <span class="nt">annotations</span><span class="p">:</span>
     <span class="nt">traefik.ingress.kubernetes.io/service-weights</span><span class="p">:</span> <span class="p p-Indicator">|</span>
-      <span class="no">spoon01: 50%</span>
-      <span class="no">spoon02: 25%</span>
-      <span class="no">spoon03: 25%</span>
+      <span class="no">basics01: 50%</span>
+      <span class="no">basics02: 25%</span>
+      <span class="no">basics03: 25%</span>
 <span class="nt">spec</span><span class="p">:</span>
   <span class="nt">rules</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test2.lab.as73.inetsix.net</span>
@@ -972,15 +972,15 @@ Events:  &lt;none&gt;
       <span class="nt">paths</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
         <span class="nt">backend</span><span class="p">:</span>
-          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">spoon01</span>
+          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">basics01</span>
           <span class="nt">servicePort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
       <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
         <span class="nt">backend</span><span class="p">:</span>
-          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">spoon02</span>
+          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">basics02</span>
           <span class="nt">servicePort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
       <span class="p p-Indicator">-</span> <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
         <span class="nt">backend</span><span class="p">:</span>
-          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">spoon03</span>
+          <span class="nt">serviceName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">basics03</span>
           <span class="nt">servicePort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div>
                 
