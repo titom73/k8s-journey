@@ -553,7 +553,6 @@ $ mkdir .kube
 $ <span class="nb">cd</span> .kube
 $ microk8s config &gt; config
 </code></pre></div>
-
 <h4 id="get-authentication-token-for-dashboard">Get authentication token for dashboard<a class="headerlink" href="#get-authentication-token-for-dashboard" title="Permanent link">#</a></h4>
 <div class="highlight"><pre><span></span><code>$ <span class="nv">token</span><span class="o">=</span><span class="k">$(</span>microk8s kubectl -n kube-system get secret <span class="p">|</span> grep default-token <span class="p">|</span> cut -d <span class="s2">&quot; &quot;</span> -f1<span class="k">)</span>
 
@@ -572,7 +571,6 @@ ca.crt:     <span class="m">1103</span> bytes
 namespace:  <span class="m">11</span> bytes
 token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IkJjSTU2YTB2WGpEeGlhSm12YlBCdXgzMGpGSmN2MEIwZlNCLVI5NFFPZ00ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZWZhdWx0LXRva2VuLXg0NXpuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImRlZmF1bHQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJmNDQ2M2JhYS0yNjM4LTRiNTQtYjZlMi1iODAzYTFkNzU1YzkiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06ZGVmYXVsdCJ9.CzvHqwWfKwYfqGC6fCqhMCLn2aIIDEYnOjAYFrQzQB2DwinNYacX634Jg3R0OvUaEcMt6PCLVxAB_YxgzTHM9yzI7xYUDgKrlCmfAc1_fUd0Sp_3eoY3N34s3P5X_8CrqLheg7VVlOCMHkBsKeVg8nRG0hBz5jH4oKs-cySl6fA9KktUNIsMcJ3hN5aeHRsYJ6Rbt7YOWz_RLhpfKTtK9iWysINgk4FFEJ7b7yzSX0gTBYT1kW5KamTIVcaaO9MX-ClL4aEz4clrfZ11MlOaIJwD1M0P1e2SiDl4w_U4hX5qGGKujwHRi32xhE0kfxK42MORovi7u-VuegR7DcmX7A
 </code></pre></div>
-
 <h3 id="configure-plugins">Configure plugins<a class="headerlink" href="#configure-plugins" title="Permanent link">#</a></h3>
 <h3 id="activate-plugins">Activate plugins<a class="headerlink" href="#activate-plugins" title="Permanent link">#</a></h3>
 <h4 id="dns-plugin">DNS Plugin<a class="headerlink" href="#dns-plugin" title="Permanent link">#</a></h4>
